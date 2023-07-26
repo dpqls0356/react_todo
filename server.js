@@ -22,8 +22,12 @@ app.use(express.static('./react/build'));
 app.route('/login').post(postLogin);
 app.route("/join").post(postJoin);
 app.get('*', (req, res) => {
-    return res.sendFile(path.join(__dirname, 'build', 'index.html'));
+    const __filename = new URL(import.meta.url).pathname;
+    const __dirname = path.dirname(__filename);
+    return res.sendFile(path.join(__dirname, 'react', 'build', 'index.html'));
 });
+
+
 
 //---------------------------------
 

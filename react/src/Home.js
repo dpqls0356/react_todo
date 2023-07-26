@@ -5,10 +5,13 @@ import Todo from "./Todo.js";
 function Home(){
 
     const [user,setUser] = useState(false);
+    const getUser = (x) =>{
+        setUser(x);
+    }
 
     return(
         <div>
-            {user?<Todo/>:<Login/>}
+            {user?<Todo getUser={getUser}/>:<Login getUser={getUser}/>}
         </div>
     )
  

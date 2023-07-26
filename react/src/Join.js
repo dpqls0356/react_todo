@@ -2,7 +2,8 @@ import { useEffect,useState } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 function Join(){
-    const [response,SetResponse] = useState("");
+    const [succeedJoin,setSucceedJoin] = useState(false);
+    const [res,setRes] = useState("");
     const [idError, setIdError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const [values,setValues] = useState({
@@ -16,40 +17,52 @@ function Join(){
             ...values,[e.target.name] : e.target.value
         })
     }
-    const PostJoin = (e)=>{
-        e.preventDefault();
-        if(values.password===values.checkpassword){
-            setPasswordError(false);
-            setIdError(false);
-            axios.post(`http://localhost:8080/join`,values)
-            .then((response) => { SetResponse(response.data) });
-            if(response.res==="fail"){
+    useEffect(()=>{                
+            if(String(res)==="fail"){
+                console.log(res);
                 setIdError(true);
-                setValues({userid:""});
-            } 
+            }
+            else if(String(res)==="succeed"){
+                setSucceedJoin(true);
+            }
+    },[res]);
+
+    const postJoin = (e)=>{
+        e.preventDefault();
+        setPasswordError(false);
+        setIdError(false);
+        if(values.password===values.checkpassword){
+            axios.post(`http://localhost:8080/join`,values)
+            .then((response) => { 
+                setRes(response.data.res);
+            }); 
         }
         else{
-            setValues({password:""});
             setPasswordError(true);
         }
     }
     return (
         <div>
-            <div>
-                <form onSubmit={PostJoin}>
+            {succeedJoin?
+                <div>
+                    <h3>Succeed Join!</h3>
+                    <Link to="/">Login</Link>
+                </div>
+            :
+                <form onSubmit={postJoin}>
                     <label htmlFor="username">UserName</label>
-                    <input required onChange={handleChange} name="username" id="username" type="text" placeholder="Write Your Name"></input>
+                    <input value={values.username}required onChange={handleChange} name="username" id="username" type="text" placeholder="Write Your Name"></input>
                     {idError?<div>이미 존재하는 아이디입니다.</div>:null}
                     <label htmlFor="id">ID</label>
-                    <input required onChange={handleChange} name="userid" id="id" type="text" placeholder="Write Your ID"></input>
-                    {passwordError?<div>not match password</div>:null}
+                    <input value={values.userid}required onChange={handleChange} name="userid" id="id" type="text" placeholder="Write Your ID"></input>
+                    {passwordError?<div>비밀번호가 일치하지않습니다.</div>:null}
                     <label htmlFor="pw">Password</label>
-                    <input required onChange={handleChange} name="password" id="pw" type="password" placeholder="Write Your Password"></input>
+                    <input value={values.password}required onChange={handleChange} name="password" id="pw" type="password" placeholder="Write Your Password"></input>
                     <label htmlFor="check-pw">Check Password</label>
-                    <input required onChange={handleChange} name="checkpassword" id="check-pw" type="password" placeholder="ReWrite Your Password"></input>
+                    <input value={values.checkpassword}required onChange={handleChange} name="checkpassword" id="check-pw" type="password" placeholder="ReWrite Your Password"></input>
                     <input type="submit" value="Join"></input>
                 </form>
-            </div>
+            }
         </div>
     )
 }
