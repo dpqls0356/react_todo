@@ -1,7 +1,7 @@
 import { Link,useNavigate } from "react-router-dom";
 import { useEffect,useState } from "react";
 import axios from 'axios'
-function Loign({getUser}){
+function Loign({getLoginStatue,getUserId}){
     const [res,setRes] = useState({});
     const navigate = useNavigate();
     const [idError,setIdError] = useState(false);
@@ -19,7 +19,8 @@ function Loign({getUser}){
         setIdError(false);
         setPasswordError(false);
         if(res.res==='succeed'){
-            getUser(true);
+            getLoginStatue(true);
+            getUserId(res.userid);
         }
         else if(res.reason==='password'){
             setPasswordError(true);

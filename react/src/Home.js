@@ -3,15 +3,18 @@ import { useEffect,useState } from "react";
 import Login from "./Login.js";
 import Todo from "./Todo.js";
 function Home(){
-
-    const [user,setUser] = useState(false);
-    const getUser = (x) =>{
-        setUser(x);
+    const [userid,setUserId] = useState();
+    const [loginStatue,setLoginStatue] = useState(false);
+    const getLoginStatue = (x) =>{
+        setLoginStatue(x);
+    }
+    const getUserId = (x) =>{
+        setUserId(x);
     }
 
     return(
         <div>
-            {user?<Todo getUser={getUser}/>:<Login getUser={getUser}/>}
+            {loginStatue?<Todo userid={userid} getLoginStatue={getLoginStatue}/>:<Login getUserId={getUserId} getLoginStatue={getLoginStatue}/>}
         </div>
     )
  

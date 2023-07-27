@@ -1,17 +1,48 @@
-function Todo({getUser}){
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+function Todo({getLoginStatue,userid}){
     const logout = () =>{
-        getUser(false);
+        getLoginStatue(false);
+    }
+  
+    const [todoList,setTodoList] = useState([]);
+  
+    // 로그인 성공시 가지고 있던 투두 데이터 가져오기
+    useEffect(()=>{
+        axios.get(`http://localhost:8080/todo/${userid}`)
+        .then((response)=>{setTodoList(response.data.todolist)});
+    },[]);
+  
+    // // 투두 데이터 뿌리기
+    // useEffect(()=>{
+
+    // },todoList)
+
+    const [todo,setTodo] = useState("");
+    const addTodo = ()=>{
+        axios.post(`http://localhost:8080/todo`,{todo})
+        .then((response)=>{
+            setTodoList(...todoList,todo);
+        })
+    }
+    const writeTodo = (e)=>{
+        setTodo(e.value);
     }
     return (
         <div>
             <header>
-                <h2>TODO LIST</h2>
+                <h2>TODO LIST {userid}</h2>
                 <button onClick={logout}>Logout</button>
             </header>
-            <form>
-                <input type="text"></input>
+            <form onSubmit={addTodo}>
+                <input onChange={writeTodo} value={todo} type="text"></input>
                 <input type="submit" value="Add"></input>
             </form>
+            <ul>
+                {todoList.map((item,index)=><li key={index}>{item}<button>x</button></li>)}
+
+            </ul>
         </div>
     )
 }
