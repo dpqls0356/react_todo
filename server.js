@@ -21,8 +21,7 @@ app.use(express.static('./react/build'));
 
 app.route('/login').post(postLogin);
 app.route("/join").post(postJoin);
-app.route("/todo").post(postTodoList);
-app.route("/todo/:userid").get(getTodoList);
+app.route("/todo/:userid").get(getTodoList).post(postTodoList);;
 app.get('*', (req, res) => {
     const __filename = new URL(import.meta.url).pathname;
     const __dirname = path.dirname(__filename);

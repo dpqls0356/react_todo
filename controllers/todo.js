@@ -11,5 +11,18 @@ export const getTodoList =async(req,res)=>{
     
 }
 export const postTodoList = async(req,res)=>{
-    console.log(req.body);
+    const {todo}  = req.body;
+    const {userid} = req.params;
+    const updateDB = await ToDo.findOne({userid:userid});
+    if(updateDB){
+        const pushDate = updateDB.todolist.concat(todo);
+        await ToDo.updateOne({userid},{$set:{todolist:pushDate}});
+        const resDate =  await ToDo.findOne({userid:userid});
+        res.send({todoList:resDate.todolist});
+    }
+    else{
+        console.log(".....");
+        // 비정상적인 접근 - 유저 아이디와 일치하는 투두 데이터가 없음
+    }
+
 }

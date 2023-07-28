@@ -20,14 +20,16 @@ function Todo({getLoginStatue,userid}){
     // },todoList)
 
     const [todo,setTodo] = useState("");
-    const addTodo = ()=>{
-        axios.post(`http://localhost:8080/todo`,{todo})
+    const addTodo = (e)=>{
+        e.preventDefault();
+        axios.post(`http://localhost:8080/todo/${userid}`,{todo})
         .then((response)=>{
-            setTodoList(...todoList,todo);
+            setTodoList(response.data.todoList);
+            setTodo("");
         })
     }
     const writeTodo = (e)=>{
-        setTodo(e.value);
+        setTodo(e.target.value);
     }
     return (
         <div>
@@ -36,7 +38,7 @@ function Todo({getLoginStatue,userid}){
                 <button onClick={logout}>Logout</button>
             </header>
             <form onSubmit={addTodo}>
-                <input onChange={writeTodo} value={todo} type="text"></input>
+                <input value={todo} onChange={writeTodo} type="text"></input>
                 <input type="submit" value="Add"></input>
             </form>
             <ul>
