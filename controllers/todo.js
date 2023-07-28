@@ -26,3 +26,12 @@ export const postTodoList = async(req,res)=>{
     }
 
 }
+
+export const deleteTodoList = async(req,res)=>{
+    const {userid,todoIndex} = req.params;
+    const todo =  await ToDo.findOne({userid:userid});
+    const pushDate = todo.todolist.splice(todoIndex,1);
+    await ToDo.updateOne({userid},{$set:{todolist:pushDate}});
+    await todo.save();
+    res.send({todoList:todo.todolist});
+}

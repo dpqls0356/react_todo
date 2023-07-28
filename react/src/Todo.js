@@ -7,19 +7,15 @@ function Todo({getLoginStatue,userid}){
     }
   
     const [todoList,setTodoList] = useState([]);
+    const [todo,setTodo] = useState("");
+    const [todoIndex,setTodoIndex]= useState("");
   
     // 로그인 성공시 가지고 있던 투두 데이터 가져오기
     useEffect(()=>{
         axios.get(`http://localhost:8080/todo/${userid}`)
         .then((response)=>{setTodoList(response.data.todolist)});
     },[]);
-  
-    // // 투두 데이터 뿌리기
-    // useEffect(()=>{
 
-    // },todoList)
-
-    const [todo,setTodo] = useState("");
     const addTodo = (e)=>{
         e.preventDefault();
         axios.post(`http://localhost:8080/todo/${userid}`,{todo})
@@ -30,6 +26,20 @@ function Todo({getLoginStatue,userid}){
     }
     const writeTodo = (e)=>{
         setTodo(e.target.value);
+    }
+
+    useEffect(()=>{
+        if(todoIndex!==""){
+            console.log('index:'+todoIndex);
+            axios.delete(`http://localhost:8080/todo/${userid}/${todoIndex}`)
+            .then((response)=>{
+                setTodoList(response.data.todoList);
+                setTodoIndex("");
+        })
+    }
+    },[todoIndex]);
+    const deleteTodo = (index) =>{
+        setTodoIndex(index);
     }
     return (
         <div>
@@ -42,7 +52,7 @@ function Todo({getLoginStatue,userid}){
                 <input type="submit" value="Add"></input>
             </form>
             <ul>
-                {todoList.map((item,index)=><li key={index}>{item}<button>x</button></li>)}
+                {todoList.map((item,index)=><li key={index}>{index}:{item}<button onClick={()=>deleteTodo(index)}>x</button></li>)}
 
             </ul>
         </div>
